@@ -15,4 +15,6 @@ public interface IBatchService {
     List<AdsenseByWarehouseDto> getAdsenseByWarehouseAndQuantity(long adsenseId);
     List<AdsenseBySectionAndDueDateDto> findAdsenseBySectionAndDueDate(long sectionId, int numberOfDays);
     List<AdsensByDueDateAndCategoryDto> findAdsenseByDueDateAndCategory(int numberOfDays, String category, String order);
+    List<Batch> allStocksByProduct(List<AdsenseIdDto> adsenseList);
+    int totalExpired(List<Batch> batchList);
 }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -53,9 +52,6 @@ public class BatchService implements IBatchService {
     @Override
     public List<BatchDto> findAllByAdsenseId(Long adsenseId) {
         List<Batch> batchList = batchRepository.findAllByAdsenseId(adsenseId);
-//        if (batchList.isEmpty()) {
-//            throw new NotFound("Lote do anúncio não encontrado!");
-//        }
         List<Batch> newListBacthValid = validateBatch(batchList);
         return BatchDto.convertDto(newListBacthValid);
     }
@@ -103,7 +99,6 @@ public class BatchService implements IBatchService {
                 }
             }
         }
-//        if (newListBatch.isEmpty()) throw new NotFound("Data de validade ou estoque");
         return newListBatch;
     }
 
@@ -173,4 +168,26 @@ public class BatchService implements IBatchService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Esse método retorna uma lista de lotes que pertencem a uma lista de anuncios recebida
+     * como parametro.
+     * @param adsenseList
+     */
+    public List<Batch> allStocksByProduct(List<AdsenseIdDto> adsenseList) {
+        List<Batch> result = new ArrayList<>();
+        adsenseList.forEach(adsenseId -> batchRepository.findAllByAdsenseId(adsenseId.getId())
+                        .forEach(batch -> result.add(batch)));
+        return result;
+    }
+
+    /**
+     * Esse método retorna o total de produtos vencidos em uma lista de lotes determinada.
+     * @param batchList
+     */
+    public int totalExpired(List<Batch> batchList) {
+        List<Batch> newBatchList = batchList.stream().filter(batch -> (LocalDate.now().plusWeeks(3)).isAfter(batch.getDueDate()))
+                .collect(Collectors.toList());
+        int totalQuantity = newBatchList.stream().mapToInt(Batch::getCurrentQuantity).sum();
+        return totalQuantity;
+    }
 }

@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 public class BatchDto implements Comparable<BatchDto>{
     private Long batchNumber;
     private int currentQuantity;
+    private int initialQuantity;
     private LocalDate dueDate;
 
     public BatchDto(Batch batch) {
         this.batchNumber = batch.getBatchNumber();
         this.currentQuantity = batch.getCurrentQuantity();
+        this.initialQuantity = batch.getInitialQuantity();
         this.dueDate = batch.getDueDate();
     }
 
