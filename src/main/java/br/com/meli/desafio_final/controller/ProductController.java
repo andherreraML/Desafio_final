@@ -1,6 +1,7 @@
 package br.com.meli.desafio_final.controller;
 
 import br.com.meli.desafio_final.dto.BatchesByProductDto;
+import br.com.meli.desafio_final.dto.ProductReportDto;
 import br.com.meli.desafio_final.model.entity.Product;
 import br.com.meli.desafio_final.model.enums.Category;
 import br.com.meli.desafio_final.service.implementation.ProductService;
@@ -48,5 +49,15 @@ public class ProductController {
     @GetMapping("/sortlist")
     public ResponseEntity<BatchesByProductDto> findBatchByProduct(@RequestParam Long productId, String s) {
         return ResponseEntity.ok(service.findBatchByProduct(productId, s));
+    }
+
+    /**
+     * Nesse método retornamos a quantidade vendida do produto especifico
+     * @param name
+     * @return um relatorio da quantidade total de vendas do produto
+     */
+    @GetMapping("/product")
+    private ResponseEntity<ProductReportDto> findByName(@RequestParam String name) {
+        return ResponseEntity.ok(service.doRepoByName(name));
     }
 }

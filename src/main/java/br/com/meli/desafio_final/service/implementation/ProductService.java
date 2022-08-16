@@ -3,18 +3,18 @@ package br.com.meli.desafio_final.service.implementation;
 import br.com.meli.desafio_final.dto.AdsenseIdDto;
 import br.com.meli.desafio_final.dto.BatchDto;
 import br.com.meli.desafio_final.dto.BatchesByProductDto;
+import br.com.meli.desafio_final.dto.ProductReportDto;
 import br.com.meli.desafio_final.exception.NotFound;
+import br.com.meli.desafio_final.model.entity.Batch;
 import br.com.meli.desafio_final.model.entity.Product;
 import br.com.meli.desafio_final.model.entity.Section;
 import br.com.meli.desafio_final.model.enums.Category;
 import br.com.meli.desafio_final.repository.ProductRepository;
-import br.com.meli.desafio_final.service.implementation.BatchService;
 import br.com.meli.desafio_final.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -86,5 +86,23 @@ public class ProductService implements IProductService {
         List<AdsenseIdDto> adsenseList = adsenseService.findByProductId(product.getId());
         List<BatchDto> batchStock = batchService.returnBatchStock(adsenseList, s);
         return new BatchesByProductDto(sections.get(0), product.getId(), batchStock);
+    }
+
+    /**
+     * Esse método retorna um Dto que é um relatório sobre um produto em específico,
+     * para o representante ou vendedor ver como foram as vendas
+     * @param name
+     */
+    @Override
+    public ProductReportDto doRepoByName(String name) {
+        Product product = repository.findByName(name);
+        List<AdsenseIdDto> adsenseList = adsenseService.findByProductId(product.getId());
+        List<Batch> batchList = batchService.allStocksByProduct(adsenseList);
+        List<BatchDto> batchDtoList = BatchDto.convertDto(batchList);
+        int totalInitialQuantity = batchDtoList.stream().mapToInt(BatchDto::getInitialQuantity).sum();
+        int totalCurrentQuantity = batchDtoList.stream().mapToInt(BatchDto::getCurrentQuantity).sum();
+        int total = totalInitialQuantity - totalCurrentQuantity;
+        int totalExpired = batchService.totalExpired(batchList);
+        return new ProductReportDto(name, total, totalCurrentQuantity, totalExpired);
     }
 }
