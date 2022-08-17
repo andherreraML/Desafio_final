@@ -173,7 +173,7 @@ public class BatchService implements IBatchService {
      * como parametro.
      * @param adsenseList
      */
-    public List<Batch> allStocksByProduct(List<AdsenseIdDto> adsenseList) {
+    public List<Batch> allStocksByAdsenseList(List<AdsenseIdDto> adsenseList) {
         List<Batch> result = new ArrayList<>();
         adsenseList.forEach(adsenseId -> batchRepository.findAllByAdsenseId(adsenseId.getId())
                         .forEach(batch -> result.add(batch)));
