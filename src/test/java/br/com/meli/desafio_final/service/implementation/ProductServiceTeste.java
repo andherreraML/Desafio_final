@@ -1,7 +1,10 @@
 package br.com.meli.desafio_final.service.implementation;
 
 import br.com.meli.desafio_final.dto.BatchesByProductDto;
+import br.com.meli.desafio_final.dto.ProductDto;
 import br.com.meli.desafio_final.dto.ProductReportDto;
+import br.com.meli.desafio_final.exception.BadRequest;
+import br.com.meli.desafio_final.exception.NotFound;
 import br.com.meli.desafio_final.model.entity.Product;
 import br.com.meli.desafio_final.model.enums.Category;
 import br.com.meli.desafio_final.repository.ProductRepository;
@@ -46,6 +49,47 @@ public class ProductServiceTeste {
 
     // TODO: REMOVER A PALAVRA "TEST" DOS NOMES DOS MÉTODOS, POIS A MAIORIA NÃO POSSUI
     // TODO: ADICIONAR @DisplayName() AOS TESTES QUE NÃO O POSSUI
+
+    @Test
+    @DisplayName("Salva um novo produto")
+    public void save() {
+        ProductDto productDto = ProductUtils.newProductDto();
+        BDDMockito.when(productRepository.findByName(ArgumentMatchers.anyString()))
+                .thenAnswer(invocationOnMock -> {
+                    throw new NotFound("Produto não existente");
+                });
+
+        BDDMockito.when(productRepository.save(ArgumentMatchers.any()))
+                .thenReturn(ProductUtils.newProduct4ToSave());
+
+        BDDMockito.when(productRepository.findAll()).thenReturn(ProductUtils.productList());
+
+        Product newProduct = productService.save(productDto);
+
+        assertThat(newProduct).isNotNull();
+        assertThat(newProduct.getId()).isEqualTo(ProductUtils.productList().size() + 1);
+        assertThat(newProduct.getCategory()).isEqualTo(productDto.getCategory());
+        assertThat(newProduct.getVolumen()).isEqualTo(productDto.getVolumen());
+        assertThat(newProduct.getName()).isEqualTo(productDto.getName());
+    }
+
+    @Test
+    @DisplayName("Lanza um erro quando o produto já existe")
+    public void saveThrowException() {
+        Exception exceptionResponse = null;
+        Product newProduct = null;
+        BDDMockito.when(productRepository.findByName(ArgumentMatchers.anyString()))
+                .thenReturn(ProductUtils.newProduct4ToSave());
+
+        try {
+            newProduct = productService.save(ProductUtils.newProductDto());
+        } catch (BadRequest e) {
+            exceptionResponse = e;
+        }
+
+        assertThat(newProduct).isNull();
+        assertThat(exceptionResponse.getMessage()).isEqualTo("Produto já cadastrado");
+    }
 
     @Test
     public void testGetAllProducts() {

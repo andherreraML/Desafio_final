@@ -1,6 +1,7 @@
 package br.com.meli.desafio_final.util;
 
 import br.com.meli.desafio_final.dto.BatchesByProductDto;
+import br.com.meli.desafio_final.dto.ProductDto;
 import br.com.meli.desafio_final.model.entity.Product;
 import br.com.meli.desafio_final.model.enums.Category;
 
@@ -69,6 +70,14 @@ public class ProductUtils {
                 .warehouseId(1L)
                 .productId(3L)
                 .batchStock(BatchDtoUtils.generateBatchDtoList())
+                .build();
+    }
+
+    public static ProductDto newProductDto() {
+        return ProductDto.builder()
+                .name("Manteiga")
+                .volumen(5.00)
+                .category(Category.REFRIGERATED)
                 .build();
     }
 }
