@@ -13,10 +13,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
+import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -26,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -101,6 +100,59 @@ public class ProductServiceTeste {
 
         assertThat(response).isNotNull();
         assertThat(response).isEqualTo("Update do produto feito com sucesso");
+    }
+
+    @Test
+    @DisplayName("Deleta o produto especificado")
+    public void delete() {
+        BDDMockito.willDoNothing().given(productRepository).deleteById(ArgumentMatchers.anyLong());
+
+        String message = productService.delete(1L);
+
+        assertThat(message).isNotNull();
+        verify(productRepository, Mockito.atLeastOnce()).deleteById(1L);
+        assertThat(message).isEqualTo("Produto deletado com sucesso");
+    }
+
+//    @Test
+//    @DisplayName("Lanza um erro quando o produto a deletar não existe")
+//    public void deleteThrowException() {
+//        final long NotExistId = 999L;
+//
+//        Assertions.assertThrows(NotFound.class, () -> {
+//            productService.delete(NotExistId);
+//        });
+//
+//        verify(productRepository, never()).deleteById(NotExistId);
+//    }
+
+    @Test
+    @DisplayName("Encontra um produto pelo nome")
+    public void findByName() {
+        BDDMockito.when(productRepository.findByName(ArgumentMatchers.anyString()))
+                .thenReturn(ProductUtils.newProduct2ToSave());
+
+        Product product = productService.findByName("Tomate");
+
+        assertThat(product).isNotNull();
+        assertThat(product.getName()).isEqualTo(ProductUtils.newProduct2ToSave().getName());
+        assertThat(product.getVolumen()).isEqualTo(ProductUtils.newProduct2ToSave().getVolumen());
+        assertThat(product.getCategory()).isEqualTo(ProductUtils.newProduct2ToSave().getCategory());
+    }
+
+    @Test
+    @DisplayName("Lanza erro quando nenhum produto é encontrado")
+    public void findByNameThrowsException() {
+        BDDMockito.when(productRepository.findByName(ArgumentMatchers.anyString()))
+                .thenReturn(null);
+        Exception exceptionResponse = null;
+        try {
+            productService.findByName("Nome");
+        } catch (NotFound e) {
+            exceptionResponse = e;
+        }
+
+        assertThat(exceptionResponse.getMessage()).isEqualTo("Produto não existente");
     }
 
     @Test
