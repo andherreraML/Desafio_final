@@ -97,12 +97,14 @@ public class ProductService implements IProductService {
     public ProductReportDto doRepoByName(String name) {
         Product product = repository.findByName(name);
         List<AdsenseIdDto> adsenseList = adsenseService.findByProductId(product.getId());
-        List<Batch> batchList = batchService.allStocksByProduct(adsenseList);
-        List<BatchDto> batchDtoList = BatchDto.convertDto(batchList);
-        int totalInitialQuantity = batchDtoList.stream().mapToInt(BatchDto::getInitialQuantity).sum();
-        int totalCurrentQuantity = batchDtoList.stream().mapToInt(BatchDto::getCurrentQuantity).sum();
-        int total = totalInitialQuantity - totalCurrentQuantity;
+        List<Batch> batchList = batchService.allStocksByAdsenseList(adsenseList);
+        int totalInitialQuantity = batchList.stream().mapToInt(Batch::getInitialQuantity).sum();
+        int totalCurrentQuantity = batchList.stream().mapToInt(Batch::getCurrentQuantity).sum();
+        int total = 0;
+        if (totalInitialQuantity > totalCurrentQuantity) total = totalInitialQuantity - totalCurrentQuantity;
+        List<BatchDto> batchStock = batchService.returnBatchStock(adsenseList, null);
+        int CurrentQuantity = batchStock.stream().mapToInt(BatchDto::getCurrentQuantity).sum();
         int totalExpired = batchService.totalExpired(batchList);
-        return new ProductReportDto(name, total, totalCurrentQuantity, totalExpired);
+        return new ProductReportDto(name, totalInitialQuantity, total, CurrentQuantity, totalExpired);
     }
 }
