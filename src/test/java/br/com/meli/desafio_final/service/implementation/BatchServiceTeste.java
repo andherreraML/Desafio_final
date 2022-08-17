@@ -11,6 +11,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -195,5 +196,24 @@ public class BatchServiceTeste {
                 .returnBatchStock(AdsenseUtilsDto.generateAdsenseIdDtoList(), "V");
 
         Assertions.assertThat(batchDtosList.get(0)).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Retorna uma lista de lotes que pertencem numa lista de anuncios.")
+    public void allStocksByAdsenseList() {
+        BDDMockito.when(batchRepository.findAllByAdsenseId(ArgumentMatchers.anyLong()))
+                .thenReturn(List.of(BatchUtils.newBatch1ToSave()));
+
+        List<Batch> batchList = batchService.allStocksByAdsenseList(List.of(AdsenseUtilsDto.newAdsenseDtoToSave()));
+
+        Assertions.assertThat(batchList).isNotNull();
+        org.junit.jupiter.api.Assertions.assertEquals(batchList.get(0).getBatchNumber(), BatchUtils.newBatch1ToSave().getBatchNumber());
+    }
+
+    @Test
+    @DisplayName("Retorna a quantidade total de produtos vencidos.")
+    public void totalExpired() {
+        int total = batchService.totalExpired(BatchUtils.generateBatchList());
+        org.junit.jupiter.api.Assertions.assertEquals(total, BatchUtils.newBatch4ToSave().getCurrentQuantity());
     }
 }
