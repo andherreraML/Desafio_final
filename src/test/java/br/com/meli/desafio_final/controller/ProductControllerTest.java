@@ -38,6 +38,58 @@ public class ProductControllerTest {
     // TODO: ADICIONAR @DisplayName() AOS TESTES QUE NÃO O POSSUI
 
     @Test
+    @DisplayName("Retorna o produto cadastrado com status 201")
+    public void save() {
+        BDDMockito.when(productService.save(ArgumentMatchers.any()))
+                .thenReturn(ProductUtils.newProduct4ToSave());
+
+        ResponseEntity<Product> response = productController.save(ProductUtils.newProductDto());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getName()).isEqualTo(ProductUtils.newProduct4ToSave().getName());
+    }
+
+    @Test
+    @DisplayName("Retorna o produto encontrado pelo nome com status 200")
+    public void findByName() {
+        BDDMockito.when(productService.findByName(ArgumentMatchers.anyString()))
+                .thenReturn(ProductUtils.newProduct1ToSave());
+
+        ResponseEntity<Product> response = productController.findByName("Alface");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getName()).isEqualTo("Alface");
+    }
+
+    @Test
+    @DisplayName("Faz o update do produto com status 200")
+    public void update() {
+        BDDMockito.when(productService.update(ArgumentMatchers.any()))
+                .thenReturn("Update do produto feito com sucesso");
+
+        ResponseEntity<String> response = productController.update(ProductUtils.newProductDto2());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo("Update do produto feito com sucesso");
+    }
+
+    @Test
+    @DisplayName("Deleta um produto com status 200")
+    public void delete() {
+        BDDMockito.when(productService.delete(ArgumentMatchers.anyLong()))
+                .thenReturn("Produto deletado com sucesso");
+
+        ResponseEntity<String> response = productController.delete(5L);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo("Produto deletado com sucesso");
+    }
+
+    @Test
     public void testGetAllProducts() {
         BDDMockito.when(productService.findAllProducts())
                 .thenReturn(ProductUtils.productList());
