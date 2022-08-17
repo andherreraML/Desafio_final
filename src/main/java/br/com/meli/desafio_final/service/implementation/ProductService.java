@@ -39,8 +39,6 @@ public class ProductService implements IProductService {
         try {
             findByName(productDto.getName());
         } catch (NotFound e) {
-            Long id = (long) (findAllProducts().size() + 1);
-            product.setId(id);
             product.setName(productDto.getName());
             product.setVolumen(productDto.getVolumen());
             product.setCategory(productDto.getCategory());
