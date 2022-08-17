@@ -125,7 +125,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("Retorna status 200 e o relatorio do produto")
+    @DisplayName("Retorna o relatorio do produto com status 200")
     public void doRepoByName() {
         ProductReportDto productReportDto = ProductReportDtoUtils.newRepoToSave();
         BDDMockito.when(productService.doRepoByName(ArgumentMatchers.anyString()))
