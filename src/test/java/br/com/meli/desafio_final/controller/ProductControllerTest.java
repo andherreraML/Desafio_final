@@ -1,12 +1,16 @@
 package br.com.meli.desafio_final.controller;
 
 import br.com.meli.desafio_final.dto.BatchesByProductDto;
+import br.com.meli.desafio_final.dto.ProductReportDto;
 import br.com.meli.desafio_final.model.entity.Product;
 import br.com.meli.desafio_final.model.enums.Category;
 import br.com.meli.desafio_final.service.implementation.ProductService;
+import br.com.meli.desafio_final.util.ProductReportDtoUtils;
 import br.com.meli.desafio_final.util.ProductUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -66,5 +70,19 @@ public class ProductControllerTest {
         assertThat(productResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(productResponse.getBody()).isNotNull();
         assertThat(productResponse.getBody()).isEqualTo(batchesByProductDto);
+    }
+
+    @Test
+    @DisplayName("Retorna status 200 e o relatorio do produto")
+    public void doRepoByName() {
+        ProductReportDto productReportDto = ProductReportDtoUtils.newRepoToSave();
+        BDDMockito.when(productService.doRepoByName(ArgumentMatchers.anyString()))
+                .thenReturn(productReportDto);
+
+        ResponseEntity<ProductReportDto> response = productController.doRepoByName("Alface");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(productReportDto);
     }
 }

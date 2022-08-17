@@ -57,7 +57,7 @@ public class ProductController {
      * @return um relatorio da quantidade total de vendas do produto
      */
     @GetMapping("/product")
-    private ResponseEntity<ProductReportDto> findByName(@RequestParam String name) {
+    public ResponseEntity<ProductReportDto> doRepoByName(@RequestParam String name) {
         return ResponseEntity.ok(service.doRepoByName(name));
     }
 }
