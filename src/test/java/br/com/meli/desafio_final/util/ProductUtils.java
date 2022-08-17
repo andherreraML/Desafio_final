@@ -80,4 +80,12 @@ public class ProductUtils {
                 .category(Category.REFRIGERATED)
                 .build();
     }
+
+    public static ProductDto newProductDto2() {
+        return ProductDto.builder()
+                .name("Manteiga")
+                .volumen(3.00)
+                .category(Category.FRESH)
+                .build();
+    }
 }

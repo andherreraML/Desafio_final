@@ -92,6 +92,18 @@ public class ProductServiceTeste {
     }
 
     @Test
+    @DisplayName("Faz o update do produto")
+    public void update() {
+        BDDMockito.when(productRepository.findByName(ArgumentMatchers.anyString()))
+                .thenReturn(ProductUtils.newProduct4ToSave());
+
+        String response = productService.update(ProductUtils.newProductDto2());
+
+        assertThat(response).isNotNull();
+        assertThat(response).isEqualTo("Update do produto feito com sucesso");
+    }
+
+    @Test
     public void testGetAllProducts() {
 
         BDDMockito.when(productRepository.findAll())

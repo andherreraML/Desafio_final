@@ -11,7 +11,7 @@ import java.util.List;
 public interface IProductService {
 
     Product save(ProductDto productDto);
-    String update(Product product);
+    String update(ProductDto productDto);
     String delete(Long id);
     Product findByName(String name);
     List<Product> findAllProducts();

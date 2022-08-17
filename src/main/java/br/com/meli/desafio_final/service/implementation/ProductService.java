@@ -52,14 +52,14 @@ public class ProductService implements IProductService {
 
     /**
      * Nesse método estamos fazendo um update de um produto
-     * @param product
+     * @param productDto
      */
     @Override
-    public String update(Product product) {
-        Product foundProduct = findByName(product.getName());
-        foundProduct.setName(product.getName());
-        foundProduct.setVolumen(product.getVolumen());
-        foundProduct.setCategory(product.getCategory());
+    public String update(ProductDto productDto) {
+        Product foundProduct = findByName(productDto.getName());
+        foundProduct.setName(productDto.getName());
+        foundProduct.setVolumen(productDto.getVolumen());
+        foundProduct.setCategory(productDto.getCategory());
         repository.save(foundProduct);
         return "Update do produto feito com sucesso";
     }
