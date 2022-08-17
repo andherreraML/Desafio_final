@@ -70,8 +70,6 @@ public class InBoundOrderServiceTeste {
         BDDMockito.willDoNothing().given(sectionService).setAndUpdateCapacity(1500D, sectionFresh);
 
         // TODO: REMOVER COMENTÁRIO
-        //BDDMockito.when(batchService.findById(ArgumentMatchers.any(Long.class)))
-          //      .thenReturn(batch);
 
         BDDMockito.when(inboundOrderRepository.save(ArgumentMatchers.any(InBoundOrder.class)))
                 .thenReturn(inBoundOrder);
@@ -114,7 +112,7 @@ public class InBoundOrderServiceTeste {
 
         BDDMockito.willDoNothing().given(sectionService).setAndUpdateCapacity(-1485D, sectionFresh);
 
-        BDDMockito.when(batchService.findById(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(Long.class)))
+        BDDMockito.when(batchService.findByBatchNumberAndInboundOrderId(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(Long.class)))
               .thenReturn(batch);
 
         BDDMockito.when(inboundOrderRepository.save(ArgumentMatchers.any(InBoundOrder.class)))
@@ -158,7 +156,7 @@ public class InBoundOrderServiceTeste {
 
         BDDMockito.willDoNothing().given(sectionService).setAndUpdateCapacity(150D, sectionFresh);
 
-        BDDMockito.when(batchService.findById(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(Long.class)))
+        BDDMockito.when(batchService.findByBatchNumberAndInboundOrderId(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(Long.class)))
                 .thenReturn(batch);
 
         BDDMockito.when(inboundOrderRepository.save(ArgumentMatchers.any(InBoundOrder.class)))

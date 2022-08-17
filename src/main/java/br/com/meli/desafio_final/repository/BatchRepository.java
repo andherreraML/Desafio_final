@@ -1,16 +1,11 @@
 package br.com.meli.desafio_final.repository;
 
-import br.com.meli.desafio_final.dto.AdsenseByWarehouseDto;
 import br.com.meli.desafio_final.model.entity.Batch;
-import br.com.meli.desafio_final.model.enums.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +53,7 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
             " WHERE frescos.in_bound_order.id = frescos.batch.in_bound_order_id\n" +
             " AND frescos.in_bound_order.section_id = ?1\n" +
             " AND due_date BETWEEN ?2 AND ?3" +
-            "ORDER BY due_date", nativeQuery = true)
+            " ORDER BY due_date", nativeQuery = true)
     List<Object[]> getAdsenseBySectionAndDate(long id, LocalDate initialDate, LocalDate finalDate);
 
 
