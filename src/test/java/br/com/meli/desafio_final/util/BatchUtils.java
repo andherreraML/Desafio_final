@@ -54,19 +54,21 @@ public class BatchUtils {
                 .adsense(AdsenseUtils.newAdsense1ToSave())
                 .currentTemperature(10)
                 .minimumTemperature(10F)
-                .currentQuantity(0)
-                .initialQuantity(0)
+                .currentQuantity(2)
+                .initialQuantity(10)
                 .manufacturingDate(LocalDate.of(2022, 05, 03))
                 .manufacturingTime(LocalDateTime.of(LocalDate.of(2022, 05, 03), LocalTime.of(10, 15, 33)))
-                .dueDate(LocalDate.of(2022,12, 8))
+                .dueDate(LocalDate.of(2022,5, 8))
                 .inBoundOrder(null)
                 .build();
     }
 
-    public static List<Batch> genetadBatchList(){
+    public static List<Batch> generateBatchList(){
         List<Batch> batchList = new ArrayList<>();
         batchList.add(newBatch1ToSave());
         batchList.add(newBatch2ToSave());
+        batchList.add(newBatch4ToSave());
+
         return batchList;
     }
 

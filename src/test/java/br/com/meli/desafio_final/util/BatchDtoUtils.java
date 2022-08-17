@@ -19,15 +19,15 @@ public class BatchDtoUtils {
         return BatchDto.builder()
                 .batchNumber(2L)
                 .currentQuantity(100)
-                .dueDate(LocalDate.of(2022,5, 12))
+                .dueDate(LocalDate.of(2022,12, 12))
                 .build();
     }
 
     public static BatchDto newBatchDto3ToSave() {
         return BatchDto.builder()
                 .batchNumber(3L)
-                .currentQuantity(120)
-                .dueDate(LocalDate.of(2022,10, 28))
+                .currentQuantity(2)
+                .dueDate(LocalDate.of(2022,5, 8))
                 .build();
     }
 
@@ -36,6 +36,13 @@ public class BatchDtoUtils {
         list.add(newBatchDto1ToSave());
         list.add(newBatchDto2ToSave());
         list.add(newBatchDto3ToSave());
+        return list;
+    }
+
+    public static List<BatchDto> generateBatchDtoList2() {
+        List<BatchDto> list = new ArrayList<>();
+        list.add(newBatchDto1ToSave());
+        list.add(newBatchDto2ToSave());
         return list;
     }
 }
