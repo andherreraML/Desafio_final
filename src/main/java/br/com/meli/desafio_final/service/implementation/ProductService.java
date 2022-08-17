@@ -1,9 +1,7 @@
 package br.com.meli.desafio_final.service.implementation;
 
-import br.com.meli.desafio_final.dto.AdsenseIdDto;
-import br.com.meli.desafio_final.dto.BatchDto;
-import br.com.meli.desafio_final.dto.BatchesByProductDto;
-import br.com.meli.desafio_final.dto.ProductReportDto;
+import br.com.meli.desafio_final.dto.*;
+import br.com.meli.desafio_final.exception.BadRequest;
 import br.com.meli.desafio_final.exception.NotFound;
 import br.com.meli.desafio_final.model.entity.Batch;
 import br.com.meli.desafio_final.model.entity.Product;
@@ -30,6 +28,66 @@ public class ProductService implements IProductService {
 
     @Autowired
     private SectionService sectionService;
+
+    /**
+     * Nesse método estamos salvando um novo produto
+     * @param productDto
+     */
+    @Override
+    public Product save(ProductDto productDto) {
+        Product product = new Product();
+        try {
+            findByName(productDto.getName());
+        } catch (NotFound e) {
+            Long id = (long) (findAllProducts().size() + 1);
+            product.setId(id);
+            product.setName(productDto.getName());
+            product.setVolumen(productDto.getVolumen());
+            product.setCategory(productDto.getCategory());
+            repository.save(product);
+            return product;
+        }
+        throw new BadRequest("Produto já cadastrado");
+    }
+
+    /**
+     * Nesse método estamos fazendo um update de um produto
+     * @param product
+     */
+    @Override
+    public String update(Product product) {
+        Product foundProduct = findByName(product.getName());
+        foundProduct.setName(product.getName());
+        foundProduct.setVolumen(product.getVolumen());
+        foundProduct.setCategory(product.getCategory());
+        repository.save(foundProduct);
+        return "Update do produto feito com sucesso";
+    }
+
+    /**
+     * Nesse método estamos deletando um produto pelo id
+     * @param id
+     */
+    @Override
+    public String delete(Long id) {
+        try {
+            repository.deleteById(id);
+        } catch (Exception e) {
+            throw new NotFound("Produto não existente");
+        }
+        return "Produto deletado com sucesso";
+    }
+
+    /**
+     * Nesse método estamos retornando um produto achado pelo nome
+     * @param name
+     */
+    @Override
+    public Product findByName(String name) {
+        Product product = repository.findByName(name);
+        if (product == null) throw new NotFound("Produto não existente");
+        return product;
+    }
 
     /**
      * Nesse método estamos retornado uma lista de produtos
