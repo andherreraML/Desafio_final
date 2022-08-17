@@ -3,14 +3,13 @@ package br.com.meli.desafio_final.service.implementation;
 import br.com.meli.desafio_final.dto.AdsenseIdDto;
 import br.com.meli.desafio_final.dto.BatchDto;
 import br.com.meli.desafio_final.dto.BatchesByProductDto;
+import br.com.meli.desafio_final.dto.ProductReportDto;
 import br.com.meli.desafio_final.model.entity.Product;
 import br.com.meli.desafio_final.model.enums.Category;
 import br.com.meli.desafio_final.repository.ProductRepository;
-import br.com.meli.desafio_final.util.AdsenseUtilsDto;
-import br.com.meli.desafio_final.util.BatchDtoUtils;
-import br.com.meli.desafio_final.util.ProductUtils;
-import br.com.meli.desafio_final.util.SectionUtils;
+import br.com.meli.desafio_final.util.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -150,4 +149,31 @@ public class ProductServiceTeste {
 //        Assertions.assertEquals(response.getWarehouseId(), batchesByProductDto.getWarehouseId());
 //        Assertions.assertEquals(response.getProductId(), batchesByProductDto.getProductId());
 //    }
+
+    @Test
+    @DisplayName("Retorna um relatorio do produto mandado.")
+    public void doRepoByName() {
+        BDDMockito.when(productRepository.findByName(ArgumentMatchers.anyString()))
+                .thenReturn(ProductUtils.newProduct1ToSave());
+
+        BDDMockito.when(adsenseService.findByProductId(ArgumentMatchers.anyLong()))
+                .thenReturn(AdsenseUtilsDto.generateAdsenseIdDtoList());
+
+        BDDMockito.when(batchService.allStocksByAdsenseList(ArgumentMatchers.anyList()))
+                .thenReturn(BatchUtils.generateBatchList());
+
+        BDDMockito.when(batchService.returnBatchStock(ArgumentMatchers.anyList(), ArgumentMatchers.any()))
+                .thenReturn(BatchDtoUtils.generateBatchDtoList2());
+
+        BDDMockito.when(batchService.totalExpired(ArgumentMatchers.anyList()))
+                .thenReturn(BatchUtils.newBatch4ToSave().getCurrentQuantity());
+
+        ProductReportDto reportDto = productService.doRepoByName("Alface");
+
+        Assertions.assertEquals(reportDto.getName(), "Alface");
+        Assertions.assertEquals(reportDto.getInitialQuantity(), 210);
+        Assertions.assertEquals(reportDto.getSoldQuantity(), 8);
+        Assertions.assertEquals(reportDto.getRemainingQuantity(), 200);
+        Assertions.assertEquals(reportDto.getExpiredQuantity(), 2);
+    }
 }
